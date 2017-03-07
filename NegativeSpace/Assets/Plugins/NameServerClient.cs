@@ -45,59 +45,81 @@ public class NameServerClient
 
     private ASCIIEncoding _encoder;
 
-    public NameServerClient()
+    public NameServerClient(string address, int port)
     {
+        Debug.Log("Name Server Interface created at: " + address + ":" + port);
+
+        _address = address;
+        _port = port;
         _connected = false;
     }
 
-    public void connect(string address, int port)
+    public NameServerHost Request(string id)
     {
-        _address = address;
-        _port = port;
+        NameServerHost r = null;
+        new Thread(() =>
+        {
+            r = RequestCommunication(id);
+        }).Start();
+        return r;
+    }
 
+    private NameServerHost RequestCommunication(string id)
+    {
         _encoder = new ASCIIEncoding();
 
         _client = new TcpClient();
+
+        
+
         try
         {
-            _client.Connect(address, port);
+            _client.Connect(_address, _port);
 
             _stream = _client.GetStream();
 
             _connected = true;
-            
+
         }
         catch (Exception e)
         {
             _connected = false;
             Console.WriteLine("Unable to connect");
         }
-    }
 
-    public NameServerHost request(string id)
-    {
         byte[] idB = _encoder.GetBytes("get/" + id + "/");
         if (Connected)
         {
+
+            System.Threading.Thread.Sleep(1000);
+
             try
             {
                 _stream.Write(idB, 0, idB.Length);
 
                 byte[] ret = new byte[BUFFER];
                 int bytesRead = _stream.Read(ret, 0, ret.Length);
-                if (bytesRead > 0) return _parse(_encoder.GetString(ret));
+                if (bytesRead > 0)
+                {
+                    close();
+                    return _parse(_encoder.GetString(ret));
+                }
             }
-            catch
+            catch (Exception e)
             {
-                close();
-                _connected = false;
+                Debug.LogError(e.Message);
             }
         }
+        close();
+        _connected = false;
         return null;
     }
 
+
     private NameServerHost _parse(string v)
     {
+        Debug.Log(v);
+
         if (v != "none")
         {
             string[] s = v.Split('/');
@@ -116,7 +138,12 @@ public class NameServerClient
 
     public void close()
     {
-        _client.Close();
+        if (_client != null)
+        {
+            _client.GetStream().Close();
+            _client.Close();
+        }
+        _client = null;
     }
 
 }

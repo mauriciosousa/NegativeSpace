@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Main : MonoBehaviour {
 
+    
+
     private Sensors _sensors;
     private int _pov;
 
@@ -39,6 +41,12 @@ public class Main : MonoBehaviour {
                 Camera.main.transform.rotation = Quaternion.Euler(r); ;
 
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+
+            GameObject.Find("AVESTRUZ").transform.RotateAround(Camera.main.GetComponent<PerspectiveProjection>().getSurfaceBaryCenter(), Vector3.up, 180);
         }
 	}
 }

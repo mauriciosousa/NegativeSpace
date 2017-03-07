@@ -52,9 +52,6 @@
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
@@ -69,9 +66,6 @@
     </Reference>
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>Library\UnityAssemblies\UnityEngine.HoloLens.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Purchasing.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.VR">
       <HintPath>Library\UnityAssemblies\UnityEngine.VR.dll</HintPath>
@@ -88,15 +82,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AvatarMessage.cs" />
+    <Compile Include="Assets\Scripts\BodiesManager.cs" />
     <Compile Include="Assets\Scripts\CloudMessage.cs" />
     <Compile Include="Assets\Scripts\ConfigProperties.cs" />
     <Compile Include="Assets\Scripts\Main.cs" />
     <Compile Include="Assets\Scripts\MouseOrbitImproved.cs" />
+    <Compile Include="Assets\Scripts\NSCursor.cs" />
+    <Compile Include="Assets\Scripts\NSProperties.cs" />
+    <Compile Include="Assets\Scripts\NegativeSpace.cs" />
+    <Compile Include="Assets\Scripts\PerspectiveProjection.cs" />
     <Compile Include="Assets\Scripts\PointCloudSimple.cs" />
     <Compile Include="Assets\Scripts\Sensors.cs" />
     <Compile Include="Assets\Scripts\TcpKinectListener.cs" />
     <Compile Include="Assets\Scripts\Tracker.cs" />
     <Compile Include="Assets\Scripts\TrackerProperties.cs" />
+    <Compile Include="Assets\Scripts\UdpBodiesListener.cs" />
     <Compile Include="Assets\Scripts\UdpListener.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -104,6 +104,7 @@
     <None Include="Assets\Shaders\VertexColor.shader" />
     <None Include="Assets\Shaders\simpleBillboard.shader" />
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
+    <None Include="Assets\Surface\rectangle.txt" />
     <None Include="Assets\configSettings.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
