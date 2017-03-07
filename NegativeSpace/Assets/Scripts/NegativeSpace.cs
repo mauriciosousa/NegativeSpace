@@ -30,6 +30,10 @@ public class NegativeSpace : MonoBehaviour {
     public GameObject leftCursor;
     private NSCursor _leftCursorScript;
 
+    private UDPHandheldListener _handheldListener;
+    public int handheldListenPort;
+    public string DecryptKey;
+
     public GameObject rightCursor;
     private NSCursor _rightCursorScript;
 
@@ -42,6 +46,8 @@ public class NegativeSpace : MonoBehaviour {
         _perspectiveProjection = Camera.main.GetComponent<PerspectiveProjection>();
         _leftCursorScript = leftCursor.GetComponent<NSCursor>();
         _rightCursorScript = rightCursor.GetComponent<NSCursor>();
+
+        _handheldListener = new UDPHandheldListener(handheldListenPort, DecryptKey);
     }
 
 	void Start ()
@@ -125,6 +131,13 @@ public class NegativeSpace : MonoBehaviour {
                 _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize);
                 _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize);
 
+                if (_handheldListener.Receiving)
+                {
+                    if (_handheldListener.Message.Click)
+                    {
+                        // fazer cenas
+                    }
+                }
             }
         }
     }
