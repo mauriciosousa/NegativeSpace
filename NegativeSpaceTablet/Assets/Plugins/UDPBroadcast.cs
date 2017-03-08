@@ -33,7 +33,7 @@ public class UDPBroadcast
             _remoteEndPoint = new IPEndPoint(IPAddress.Broadcast, _port);
             _udp = new UdpClient();
             _streaming = true;
-                
+            Debug.Log("[UDPBroadcast] sending to port " + _port);
         }
         catch (Exception e)
         {
