@@ -17,6 +17,7 @@ public class NegativespaceSurface
 
 public class NegativeSpace : MonoBehaviour {
 
+    private Transform origin;
 
     private PerspectiveProjection _perspectiveProjection;
     private bool _spaceCreated = false;
@@ -41,6 +42,8 @@ public class NegativeSpace : MonoBehaviour {
 
     public Vector3 NegativeSpaceSize;
 
+    public bool Handheld_CLICK = false;
+
     void Awake()
     {
         _perspectiveProjection = Camera.main.GetComponent<PerspectiveProjection>();
@@ -52,6 +55,7 @@ public class NegativeSpace : MonoBehaviour {
 
 	void Start ()
     {
+        origin = GameObject.Find("ScreenCenter").transform;
         _bodiesManager = GameObject.Find("BodiesManagerGO").GetComponent<BodiesManager>();
         _surface = new NegativespaceSurface();
     }
@@ -117,8 +121,16 @@ public class NegativeSpace : MonoBehaviour {
                 MeshRenderer renderer = gameObject.AddComponent(typeof(MeshRenderer)) as MeshRenderer;
                 renderer.material = NegativeSpaceMaterial;
 
+                MeshCollider collider = gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider;
+                
+
                 _spaceCreated = true;
                 Debug.Log("Negative Space Created");
+
+                _createCube(Vector3.zero);
+                _createCube(new Vector3(0,0, 0.1f));
+                _createCube(new Vector3(0, 0.1f, 0));
+                _createCube(new Vector3(0.1f, 0, 0));
             }
 
             // Negative Space stuff
@@ -128,18 +140,43 @@ public class NegativeSpace : MonoBehaviour {
                 Vector3 leftHand = _bodiesManager.human.body.Joints[BodyJointType.leftHandTip];
                 Vector3 rightHand = _bodiesManager.human.body.Joints[BodyJointType.rightHandTip];
 
-                _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize);
-                _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize);
+
+                _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, _handheldListener);
+                _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, _handheldListener);
+
 
                 if (_handheldListener.Receiving)
                 {
                     if (_handheldListener.Message.Click)
                     {
-                        // fazer cenas
+                        Handheld_CLICK = true;
+                    }
+                    else
+                    {
+                        Handheld_CLICK = false;
                     }
                 }
             }
         }
+    }
+
+    private void _createCube(Vector3 vector3)
+    {
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.transform.parent = origin;
+        cube.transform.localPosition = convertToNSCoordinates(vector3);
+        cube.transform.localRotation = Quaternion.identity;
+        cube.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+        //cube.GetComponent<Renderer>().enabled = false;
+    }
+
+    public Vector3 convertToNSCoordinates(Vector3 v)
+    {
+        return new Vector3(
+                Mathf.Clamp(v.x, -NegativeSpaceSize.x / 2.0f, NegativeSpaceSize.x / 2.0f),
+                Mathf.Clamp(v.y, -NegativeSpaceSize.y / 2.0f, NegativeSpaceSize.y / 2.0f),
+                Mathf.Clamp(v.z, 0, NegativeSpaceSize.z)
+                );
     }
 
     private GameObject _getShiftedObject(string name, GameObject g, Vector3 normalized, Transform parent)

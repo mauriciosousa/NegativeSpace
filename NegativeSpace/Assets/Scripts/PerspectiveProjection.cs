@@ -56,12 +56,12 @@ public class PerspectiveProjection : MonoBehaviour {
             _instantiateSphere(surfaceRect.SurfaceTopRight, "TR", SurfaceCenter);
         }
 
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);//(GameObject)Instantiate(Resources.Load("Prefabs/yoda-go"), Vector3.zero, Quaternion.identity);
-        cube.transform.parent = screenCenterGO.transform;
-        cube.transform.localPosition = Vector3.zero;// new Vector3(0f, -0.05f, 0f);
-        cube.transform.localRotation = Quaternion.identity;
-        cube.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        cube.GetComponent<Renderer>().enabled = false;
+        //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);//(GameObject)Instantiate(Resources.Load("Prefabs/yoda-go"), Vector3.zero, Quaternion.identity);
+        //cube.transform.parent = screenCenterGO.transform;
+        //cube.transform.localPosition = Vector3.zero;// new Vector3(0f, -0.05f, 0f);
+        //cube.transform.localRotation = Quaternion.identity;
+        //cube.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        //cube.GetComponent<Renderer>().enabled = false;
     }
 
     private void _instantiateSphere(Vector3 position, string name, Transform parent)

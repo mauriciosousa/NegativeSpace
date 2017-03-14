@@ -78,6 +78,7 @@
     <Compile Include="Assets\Plugins\DataEncryptor.cs" />
     <Compile Include="Assets\Plugins\UDPBroadcast.cs" />
     <Compile Include="Assets\Plugins\UDPListener.cs" />
+    <Compile Include="Assets\Plugins\UDPUnicast.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

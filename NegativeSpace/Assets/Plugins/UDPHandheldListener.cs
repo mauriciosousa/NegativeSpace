@@ -71,7 +71,6 @@ public class UDPHandheldListener : MonoBehaviour
         byte[] received = _client.EndReceive(res, ref ep);
 
         _receiving = true;
-
         Message.Update(DataEncryptor.Decrypt(Encoding.UTF8.GetString(received), _decryptKey));
 
         _client.BeginReceive(new AsyncCallback(recv), null);

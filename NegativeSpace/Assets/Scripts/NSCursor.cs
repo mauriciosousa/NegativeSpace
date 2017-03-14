@@ -3,33 +3,66 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum PointingTechnique
+{
+    HandheldRotation,
+    HeadHandVectorRotation
+}
+
+
 public class NSCursor : MonoBehaviour {
 
-    public GameObject cursor;
+
+    public PointingTechnique pointingTechnique;
+
+    public GameObject ProjectorPointerGO;
 
     public NegativespaceSurface surface = null;
 
     private float _origin;
 
-    [Range(0.1f, 1f)]
-    public float scaleFactor = 1f;
+    //[Range(0.1f, 1f)]
+    //public float scaleFactor = 1f;
 
-    private Vector3 _lastHandPosition;
-
-    void Start () {
-        //cursor.GetComponent<Renderer>().enabled = false;
-        _origin = 0f;
-        _lastHandPosition = Vector3.one * float.NegativeInfinity;
+    public GameObject SelectedObject
+    {
+        get
+        {
+            return ProjectorPointerGO.GetComponent<ProjectionClipper>().HitObject;
+        }
     }
 
-    void Update () {
-		
-	}
+    void Start ()
+    {
+        _origin = 0f;
+    }
 
-    internal void updateValues(Vector3 head, Vector3 hand, Vector3 nsSize)
+    void Update ()
+    {
+    }
+    
+    internal void updateValues(Vector3 head, Vector3 hand, Vector3 nsSize, UDPHandheldListener handheldListener)
     {
         if (surface == null) return;
 
+        transform.position = hand;
+
+        if (pointingTechnique == PointingTechnique.HeadHandVectorRotation)
+        {
+            Vector3 pointingDir = (hand - head).normalized;
+            ProjectorPointerGO.transform.forward = pointingDir;
+        }
+        else if (pointingTechnique == PointingTechnique.HandheldRotation)
+        {
+            if (handheldListener.Receiving)
+            {
+                ProjectorPointerGO.transform.forward = handheldListener.Message.Rotation.eulerAngles;
+            }
+        }
+
+
+        /**
         if(_lastHandPosition.x != float.NegativeInfinity)
         {
             gameObject.transform.localPosition += gameObject.transform.worldToLocalMatrix.MultiplyVector(hand - _lastHandPosition);
@@ -42,34 +75,10 @@ public class NSCursor : MonoBehaviour {
         }
 
         _lastHandPosition = hand;
-
-        /*if (hand.z > surface.BR.z && hand.z < surface.BL.z
-            && hand.y > surface.BR.y && hand.y < surface.TR.y)
-        {
-            if (!cursor.GetComponent<Renderer>().enabled)
-            {
-                // Surface Enter
-                _origin = hand.x;
-            }
-
-            float midSpaceOrigin = ((surface.BL + surface.sBL) * 0.5f).x;
-
-            //cursor.transform.position = new Vector3(midSpaceOrigin - scaleFactor*(_origin - hand.x), hand.y, hand.z);
-            cursor.transform.position = hand;
+    */
 
 
-            cursor.GetComponent<Renderer>().enabled = true;
-        }
-        else
-        {
-            if (cursor.GetComponent<Renderer>().enabled)
-            {
-                // Surface Exit
-            }
 
-            cursor.transform.position = hand;
-
-            cursor.GetComponent<Renderer>().enabled = false;
-        }*/
     }
+
 }
