@@ -48,7 +48,7 @@ public class UDPUnicast
         {
             try
             {
-                if (DateTime.Now > _lastSent)
+                if (DateTime.Now > _lastSent.AddMilliseconds(_sendRate))
                 {
                     byte[] data = Encoding.UTF8.GetBytes(line);
                     _udp.Send(data, data.Length, _remoteEndPoint);

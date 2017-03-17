@@ -15,7 +15,8 @@ public class NegativespaceSurface
     public Vector3 sTR;
 }
 
-public class NegativeSpace : MonoBehaviour {
+public class NegativeSpace : MonoBehaviour
+{
 
     private Transform origin;
 
@@ -92,7 +93,10 @@ public class NegativeSpace : MonoBehaviour {
                 NegativeSpaceSize = new Vector3(Vector3.Distance(_surface.BL, _surface.BR), Vector3.Distance(_surface.BL, _surface.TL), Vector3.Distance(_surface.BL, _surface.sBL));
 
                 _leftCursorScript.surface = _surface;
+                _leftCursorScript.handType = HandType.Left;
+
                 _rightCursorScript.surface = _surface;
+                _rightCursorScript.handType = HandType.Right;
 
                 MeshFilter meshFilter = (MeshFilter)gameObject.AddComponent(typeof(MeshFilter));
                 Mesh m = new Mesh();
@@ -141,23 +145,35 @@ public class NegativeSpace : MonoBehaviour {
                 Vector3 rightHand = _bodiesManager.human.body.Joints[BodyJointType.rightHandTip];
 
 
-                _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, _handheldListener);
-                _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, _handheldListener);
+                //_leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, _handheldListener);
+                //_rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, _handheldListener);
 
 
-                if (_handheldListener.Receiving)
+                if (_handheldListener.Receiving && _handheldListener.Message.Hand != HandType.Unknown)
                 {
-                    if (_handheldListener.Message.Click)
+                    if (_handheldListener.Message.Hand == HandType.Left)
                     {
-                        Handheld_CLICK = true;
+                        _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, _handheldListener.Message.Rotation, _handheldListener.Message.Click);
+                        _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, Quaternion.identity, false);
                     }
                     else
                     {
-                        Handheld_CLICK = false;
+                        _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, Quaternion.identity, false);
+                        _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, _handheldListener.Message.Rotation, _handheldListener.Message.Click);
                     }
+                }
+                else
+                {
+                    _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, Quaternion.identity, false);
+                    _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, Quaternion.identity, false);
                 }
             }
         }
+    }
+
+    private Quaternion convert(Quaternion r)
+    {
+        return Quaternion.Inverse(r);
     }
 
     private void _createCube(Vector3 vector3)

@@ -5,8 +5,19 @@ using System.Net.Sockets;
 
 using UnityEngine;
 
+public enum HandType
+{
+    Left,
+    Right,
+    Unknown
+}
+
 public class HandheldMessage
 {
+
+    private HandType _hand;
+    public HandType Hand { get { return _hand; } }
+
     private bool _click;
     public bool Click { get { return _click; } }
 
@@ -22,16 +33,25 @@ public class HandheldMessage
     public void Update(string udpMessage)
     {
         string[] statements = udpMessage.Split('/');
-        Vector3 eulerRotation = new Vector3();
+        Quaternion newRotation = Quaternion.identity;
+
         foreach (string s in statements)
         {
             string [] tokens = s.Split('=');
-            if (tokens[0] == "click") _click = bool.Parse(tokens[1]);
-            else if (tokens[0] == "r.x") eulerRotation.x = float.Parse(tokens[1].Replace(',', '.'));
-            else if (tokens[0] == "r.y") eulerRotation.y = float.Parse(tokens[1].Replace(',', '.'));
-            else if (tokens[0] == "r.z") eulerRotation.z = float.Parse(tokens[1].Replace(',', '.'));
+
+            if (tokens[0] == "hand")
+            {
+                if (tokens[1] == "Right") _hand = HandType.Right;
+                else if (tokens[1] == "Left") _hand = HandType.Left;
+                else _hand = HandType.Unknown;
+            }
+            else if (tokens[0] == "click") _click = bool.Parse(tokens[1]);
+            else if (tokens[0] == "r.x") newRotation.x = float.Parse(tokens[1].Replace(',', '.'));
+            else if (tokens[0] == "r.y") newRotation.y = float.Parse(tokens[1].Replace(',', '.'));
+            else if (tokens[0] == "r.z") newRotation.z = float.Parse(tokens[1].Replace(',', '.'));
+            else if (tokens[0] == "r.w") newRotation.w = float.Parse(tokens[1].Replace(',', '.'));
         }
-        _rotation = Quaternion.Euler(eulerRotation);
+        _rotation = newRotation;
     }
 }
 

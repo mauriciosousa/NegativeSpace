@@ -3,13 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public enum PointingTechnique
 {
     HandheldRotation,
     HeadHandVectorRotation
 }
-
 
 public class NSCursor : MonoBehaviour {
 
@@ -19,11 +17,10 @@ public class NSCursor : MonoBehaviour {
     public GameObject ProjectorPointerGO;
 
     public NegativespaceSurface surface = null;
-
+    
     private float _origin;
 
-    //[Range(0.1f, 1f)]
-    //public float scaleFactor = 1f;
+    public HandType handType;
 
     public GameObject SelectedObject
     {
@@ -36,13 +33,14 @@ public class NSCursor : MonoBehaviour {
     void Start ()
     {
         _origin = 0f;
+        handType = HandType.Unknown;
     }
 
     void Update ()
     {
     }
-    
-    internal void updateValues(Vector3 head, Vector3 hand, Vector3 nsSize, UDPHandheldListener handheldListener)
+
+    internal void updateValues(Vector3 head, Vector3 hand, Vector3 nsSize, Quaternion handheldRotation, bool Click)
     {
         if (surface == null) return;
 
@@ -52,33 +50,18 @@ public class NSCursor : MonoBehaviour {
         {
             Vector3 pointingDir = (hand - head).normalized;
             ProjectorPointerGO.transform.forward = pointingDir;
+
+            Debug.DrawRay(head, pointingDir);
         }
         else if (pointingTechnique == PointingTechnique.HandheldRotation)
         {
-            if (handheldListener.Receiving)
-            {
-                ProjectorPointerGO.transform.forward = handheldListener.Message.Rotation.eulerAngles;
-            }
+            ProjectorPointerGO.transform.rotation = handheldRotation;
         }
 
-
-        /**
-        if(_lastHandPosition.x != float.NegativeInfinity)
+        if (Click)
         {
-            gameObject.transform.localPosition += gameObject.transform.worldToLocalMatrix.MultiplyVector(hand - _lastHandPosition);
-
-            gameObject.transform.localPosition = new Vector3(
-                Mathf.Clamp(gameObject.transform.localPosition.x, -nsSize.x / 2.0f, nsSize.x / 2.0f), 
-                Mathf.Clamp(gameObject.transform.localPosition.y, -nsSize.y / 2.0f, nsSize.y / 2.0f), 
-                Mathf.Clamp(gameObject.transform.localPosition.z, 0, nsSize.z)
-                );
+            Debug.Log("Hand " + handType + " " + Click);
         }
-
-        _lastHandPosition = hand;
-    */
-
-
-
     }
 
 }

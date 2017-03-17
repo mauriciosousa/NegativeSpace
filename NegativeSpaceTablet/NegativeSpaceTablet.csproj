@@ -81,6 +81,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\GyroController.cs" />
+    <Compile Include="Assets\Scripts\NSGyroController.cs" />
     <Compile Include="Assets\Scripts\NegativeSpaceCursor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
