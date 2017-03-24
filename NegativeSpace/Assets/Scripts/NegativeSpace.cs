@@ -97,6 +97,39 @@ public class NegativeSpace : MonoBehaviour
             _updateCursors();
             //_NSNetwork.lockObject(o.name);
             //_NSNetwork.unlockObject(o.name);
+
+            _DEBUG_NEGATIVESPACECONNECTIONS();
+        }
+    }
+
+    private void _DEBUG_NEGATIVESPACECONNECTIONS()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _createLocalObject("cube");
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        { // if left button pressed...
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                NSObject o = hit.transform.gameObject.GetComponent<NSObject>();
+                if (o != null)
+                {
+                    if (o.lockStatus == LockType.NotLocked)
+                    {
+                        o.lockStatus = LockType.Local;
+                        _NSNetwork.lockObject(o.name);
+                    }
+                    else if (o.lockStatus == LockType.Local)
+                    {
+                        o.lockStatus = LockType.NotLocked;
+                        _NSNetwork.unlockObject(o.name);
+                    }
+                }
+            }
         }
     }
 
@@ -320,4 +353,23 @@ public class NegativeSpace : MonoBehaviour
         return o;
     }
     #endregion
+
+    void OnGUI()
+    {
+
+        int top = 50;
+        int left = 10;
+
+        if (_NSObjects.Count > 0)
+        {
+            GUI.Label(new Rect(left, top, 500, 30), "GO/LockStatus");
+            left += 10; top += 25;
+        }
+        foreach (GameObject o in _NSObjects.Values)
+        {
+            GUI.Label(new Rect(left, top, 500, 30), o.name + " " + o.GetComponent<NSObject>().lockStatus.ToString());
+            top += 25;
+        }
+
+    }
 }
