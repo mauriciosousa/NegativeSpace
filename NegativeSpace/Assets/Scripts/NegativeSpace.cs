@@ -79,7 +79,7 @@ public class NegativeSpace : MonoBehaviour
         _surface = new NegativespaceSurface();
 
         NSProperties p = GameObject.Find("Main").GetComponent<NSProperties>();
-        handheldListenPort = p.HandheldPort;
+        handheldListenPort = p.handheld_Port;
 
         _handheldListener = new UDPHandheldListener(handheldListenPort, DecryptKey);
     }

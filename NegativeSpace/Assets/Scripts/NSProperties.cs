@@ -7,43 +7,41 @@ using UnityEngine;
 public class NSProperties : MonoBehaviour {
 
     public NegativeSpace negativeSpace;
-    private Location location;
+
+    private Location myLocation;
+    private Location remoteLocation;
+
 
     public string configFilename;
 
-    public string RpcNS_Address;
-    public int RpcNS_Port;
-    public int HandheldPort;
+    public string remote_NegativeSpaceMachine_Address;
+    public int RPC_Port;
+    public int handheld_Port;
 
+    
 
 
     void Awake()
     {
-        location = negativeSpace.location;
+        myLocation = negativeSpace.location;
+        remoteLocation = myLocation == Location.A ? Location.B : Location.A;
 
-        RpcNS_Address = getProperty("machine.address");
-        RpcNS_Port = getPropertyInt("rpc.port");
-
-        HandheldPort = getPropertyInt("rcv.handheld.port");
-
-
+        remote_NegativeSpaceMachine_Address = getProperty(remoteLocation, "machine.address");
+        RPC_Port = getPropertyInt(myLocation, "rpc.port");
+        handheld_Port = getPropertyInt(myLocation, "rcv.handheld.port");
 
     }
 
-    void Start ()
-    {
-    }
-
-    public string getProperty(string property)
+    public string getProperty(Location location, string property)
     {
         string val = "" + location.ToString() + "." + property;
         Debug.Log("[CONFIG] Retrieving property: " + val);
         return ConfigProperties.load(configFilename, val);
     }
 
-    public int getPropertyInt(string property)
+    public int getPropertyInt(Location location, string property)
     {
-        return int.Parse(getProperty(property));
+        return int.Parse(getProperty(location, property));
     }
 
 }

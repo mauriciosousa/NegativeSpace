@@ -25,8 +25,8 @@ public class RPCNetwork : MonoBehaviour
         networkView = GetComponent<NetworkView>();
 
         NSProperties p = GameObject.Find("Main").GetComponent<NSProperties>();
-        _address = p.RpcNS_Address;
-        _port = p.RpcNS_Port;
+        _address = p.remote_NegativeSpaceMachine_Address;
+        _port = p.RPC_Port;
     }
 
 

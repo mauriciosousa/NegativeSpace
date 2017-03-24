@@ -1,19 +1,8 @@
 % Negative Space Config File lol
 
-
-
-
-
-
-
-
-
-
-
-
 % LOCATION A
 
-A.machine.address=127.0.0.1
+A.machine.address=146.193.224.37
 
 A.rpc.port=5000
 A.rcv.handheld.port=5001
@@ -28,16 +17,9 @@ A.ravatar.listen.port=5004
 
 
 
-
-
-
-
-
-
-
 % LOCATION B
 
-B.machine.address=127.0.0.1
+B.machine.address=146.193.224.133
 
 B.rpc.port=5000
 B.rcv.handheld.port=5101
