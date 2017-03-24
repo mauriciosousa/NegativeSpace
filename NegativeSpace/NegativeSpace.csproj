@@ -88,11 +88,13 @@
     <Compile Include="Assets\Scripts\Main.cs" />
     <Compile Include="Assets\Scripts\MouseOrbitImproved.cs" />
     <Compile Include="Assets\Scripts\NSCursor.cs" />
+    <Compile Include="Assets\Scripts\NSObject.cs" />
     <Compile Include="Assets\Scripts\NSProperties.cs" />
     <Compile Include="Assets\Scripts\NegativeSpace.cs" />
     <Compile Include="Assets\Scripts\PerspectiveProjection.cs" />
     <Compile Include="Assets\Scripts\PointCloudSimple.cs" />
     <Compile Include="Assets\Scripts\ProjectionClipper.cs" />
+    <Compile Include="Assets\Scripts\RPCNetwork.cs" />
     <Compile Include="Assets\Scripts\Sensors.cs" />
     <Compile Include="Assets\Scripts\TcpKinectListener.cs" />
     <Compile Include="Assets\Scripts\Tracker.cs" />

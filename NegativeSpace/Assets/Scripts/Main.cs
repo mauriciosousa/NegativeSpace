@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Main : MonoBehaviour {
 
-    
 
+    public bool init = false;
+    
 
     private Sensors _sensors;
     private int _pov;
@@ -24,7 +25,7 @@ public class Main : MonoBehaviour {
 
     void Update () {
 
-        if (Input.GetKeyDown(KeyCode.P))
+        if (false && Input.GetKeyDown(KeyCode.P))
         {
             if (_sensors.sensorsList.Count > 0)
             {
@@ -49,5 +50,15 @@ public class Main : MonoBehaviour {
 
             GameObject.Find("AVESTRUZ").transform.RotateAround(Camera.main.GetComponent<PerspectiveProjection>().getSurfaceBaryCenter(), Vector3.up, 180);
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            init = true;
+        }
 	}
+
+    void OnGUI()
+    {
+
+    }
 }

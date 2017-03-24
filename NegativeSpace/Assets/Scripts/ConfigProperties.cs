@@ -22,7 +22,9 @@ public class ConfigProperties
 
 	public static void save(string filename, string property, string value)
 	{
-		if (File.Exists(filename))
+        filename = Application.dataPath + "/" + filename;
+
+        if (File.Exists(filename))
 		{
             
 			List<string> lines = new List<string>(File.ReadAllLines(filename));
@@ -58,6 +60,7 @@ public class ConfigProperties
 
 	public static string load(string filename, string property)
 	{
+        filename = Application.dataPath + "/" + filename;
 		if (File.Exists(filename))
 		{
             List<string> lines = new List<string>(File.ReadAllLines(filename));

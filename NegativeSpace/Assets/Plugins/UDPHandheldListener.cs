@@ -55,7 +55,7 @@ public class HandheldMessage
     }
 }
 
-public class UDPHandheldListener : MonoBehaviour
+public class UDPHandheldListener
 {
     private UdpClient _client;
     private int _port;

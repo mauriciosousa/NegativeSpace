@@ -6,8 +6,8 @@ public class TrackerProperties : MonoBehaviour {
 
     private static TrackerProperties _singleton;
 
-    public int listenPort = 55555;
-    public int trackerPort = 53804;
+    public int listenPort = 22222;
+    public int trackerPort = 53803;
 
     public string configFilename = "configSettings.txt";
 
@@ -26,6 +26,6 @@ public class TrackerProperties : MonoBehaviour {
 
     void Start()
     {
-        //_singleton = this;
+    //_singleton = this;
     }
 }

@@ -15,13 +15,21 @@ public class NegativespaceSurface
     public Vector3 sTR;
 }
 
+public enum Location
+{
+    A,
+    B
+}
+
 public class NegativeSpace : MonoBehaviour
 {
+
 
     private Transform origin;
 
     private PerspectiveProjection _perspectiveProjection;
     private bool _spaceCreated = false;
+    public bool Created { get { return _spaceCreated; } }
 
     private BodiesManager _bodiesManager;
 
@@ -33,7 +41,7 @@ public class NegativeSpace : MonoBehaviour
     private NSCursor _leftCursorScript;
 
     private UDPHandheldListener _handheldListener;
-    public int handheldListenPort;
+    private int handheldListenPort;
     public string DecryptKey;
 
     public GameObject rightCursor;
@@ -45,20 +53,35 @@ public class NegativeSpace : MonoBehaviour
 
     public bool Handheld_CLICK = false;
 
+
+    public Location location = Location.A;
+    private RPCNetwork _NSNetwork;
+    private Dictionary<string, GameObject> _NSObjects;
+
     void Awake()
     {
         _perspectiveProjection = Camera.main.GetComponent<PerspectiveProjection>();
         _leftCursorScript = leftCursor.GetComponent<NSCursor>();
         _rightCursorScript = rightCursor.GetComponent<NSCursor>();
 
-        _handheldListener = new UDPHandheldListener(handheldListenPort, DecryptKey);
+        _NSObjects = new Dictionary<string, GameObject>();
+
+        _NSNetwork = this.gameObject.GetComponent<RPCNetwork>();
+
+        
     }
 
-	void Start ()
+    void Start ()
     {
+
         origin = GameObject.Find("ScreenCenter").transform;
         _bodiesManager = GameObject.Find("BodiesManagerGO").GetComponent<BodiesManager>();
         _surface = new NegativespaceSurface();
+
+        NSProperties p = GameObject.Find("Main").GetComponent<NSProperties>();
+        handheldListenPort = p.HandheldPort;
+
+        _handheldListener = new UDPHandheldListener(handheldListenPort, DecryptKey);
     }
 
     void Update ()
@@ -67,48 +90,60 @@ public class NegativeSpace : MonoBehaviour
         {
             if (!_spaceCreated)
             {
-                gameObject.transform.parent = _perspectiveProjection.SurfaceCenter;
-                gameObject.transform.localPosition = Vector3.zero;
-                gameObject.transform.localRotation = Quaternion.identity;
+                _createNegativeSpace();
+            }
 
-                GameObject BL = GameObject.Find("BL");
-                GameObject BR = GameObject.Find("BR");
-                GameObject TR = GameObject.Find("TR");
-                GameObject TL = GameObject.Find("TL");
+            _syncNSObjects();
+            _updateCursors();
+            //_NSNetwork.lockObject(o.name);
+            //_NSNetwork.unlockObject(o.name);
+        }
+    }
 
-                GameObject sBL = _getShiftedObject("SBL", BL, Vector3.forward, _perspectiveProjection.SurfaceCenter);
-                GameObject sBR = _getShiftedObject("SBR", BR, Vector3.forward, _perspectiveProjection.SurfaceCenter);
-                GameObject sTR = _getShiftedObject("STR", TR, Vector3.forward, _perspectiveProjection.SurfaceCenter);
-                GameObject sTL = _getShiftedObject("STL", TL, Vector3.forward, _perspectiveProjection.SurfaceCenter);
-                
-                _surface.BL = BL.transform.localPosition;
-                _surface.BR = BR.transform.localPosition;
-                _surface.TL = TL.transform.localPosition;
-                _surface.TR = TR.transform.localPosition;
-                _surface.sBL = sBL.transform.localPosition;
-                _surface.sBR = sBR.transform.localPosition;
-                _surface.sTL = sTL.transform.localPosition;
-                _surface.sTR = sTR.transform.localPosition;
+    private void _createNegativeSpace()
+    {
+        gameObject.transform.parent = _perspectiveProjection.SurfaceCenter;
+        gameObject.transform.localPosition = Vector3.zero;
+        gameObject.transform.localRotation = Quaternion.identity;
 
-                NegativeSpaceSize = new Vector3(Vector3.Distance(_surface.BL, _surface.BR), Vector3.Distance(_surface.BL, _surface.TL), Vector3.Distance(_surface.BL, _surface.sBL));
+        GameObject BL = GameObject.Find("BL");
+        GameObject BR = GameObject.Find("BR");
+        GameObject TR = GameObject.Find("TR");
+        GameObject TL = GameObject.Find("TL");
 
-                _leftCursorScript.surface = _surface;
-                _leftCursorScript.handType = HandType.Left;
+        GameObject sBL = _getShiftedObject("SBL", BL, Vector3.forward, _perspectiveProjection.SurfaceCenter);
+        GameObject sBR = _getShiftedObject("SBR", BR, Vector3.forward, _perspectiveProjection.SurfaceCenter);
+        GameObject sTR = _getShiftedObject("STR", TR, Vector3.forward, _perspectiveProjection.SurfaceCenter);
+        GameObject sTL = _getShiftedObject("STL", TL, Vector3.forward, _perspectiveProjection.SurfaceCenter);
 
-                _rightCursorScript.surface = _surface;
-                _rightCursorScript.handType = HandType.Right;
+        _surface.BL = BL.transform.localPosition;
+        _surface.BR = BR.transform.localPosition;
+        _surface.TL = TL.transform.localPosition;
+        _surface.TR = TR.transform.localPosition;
+        _surface.sBL = sBL.transform.localPosition;
+        _surface.sBR = sBR.transform.localPosition;
+        _surface.sTL = sTL.transform.localPosition;
+        _surface.sTR = sTR.transform.localPosition;
 
-                MeshFilter meshFilter = (MeshFilter)gameObject.AddComponent(typeof(MeshFilter));
-                Mesh m = new Mesh();
-                m.name = "NegSpaceMesh";
-                m.vertices = new Vector3[] 
-                {
+        NegativeSpaceSize = new Vector3(Vector3.Distance(_surface.BL, _surface.BR), Vector3.Distance(_surface.BL, _surface.TL), Vector3.Distance(_surface.BL, _surface.sBL));
+
+        _leftCursorScript.surface = _surface;
+        _leftCursorScript.handType = HandType.Left;
+
+        _rightCursorScript.surface = _surface;
+        _rightCursorScript.handType = HandType.Right;
+
+        MeshFilter meshFilter = (MeshFilter)gameObject.AddComponent(typeof(MeshFilter));
+        Mesh m = new Mesh();
+        m.name = "NegSpaceMesh";
+        m.vertices = new Vector3[]
+        {
                     BL.transform.localPosition, BR.transform.localPosition, TR.transform.localPosition, TL.transform.localPosition,
                     sBL.transform.localPosition, sBR.transform.localPosition, sTR.transform.localPosition, sTL.transform.localPosition
-                };
+        };
 
-                m.triangles = new int[] 
-                {
+        m.triangles = new int[]
+        {
                     0, 4, 3,
                     0, 1, 4,
                     1, 5, 4,
@@ -117,56 +152,71 @@ public class NegativeSpace : MonoBehaviour
                     2, 7, 6,
                     3, 7, 2,
                     3, 4, 7
-                };
-                m.RecalculateNormals();
-                m.RecalculateBounds();
+        };
+        m.RecalculateNormals();
+        m.RecalculateBounds();
 
-                meshFilter.mesh = m;
-                MeshRenderer renderer = gameObject.AddComponent(typeof(MeshRenderer)) as MeshRenderer;
-                renderer.material = NegativeSpaceMaterial;
+        meshFilter.mesh = m;
+        MeshRenderer renderer = gameObject.AddComponent(typeof(MeshRenderer)) as MeshRenderer;
+        renderer.material = NegativeSpaceMaterial;
 
-                MeshCollider collider = gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider;
-                
+        MeshCollider collider = gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider;
 
-                _spaceCreated = true;
-                Debug.Log("Negative Space Created");
 
-                _createCube(Vector3.zero);
-                _createCube(new Vector3(0,0, 0.1f));
-                _createCube(new Vector3(0, 0.1f, 0));
-                _createCube(new Vector3(0.1f, 0, 0));
-            }
+        _spaceCreated = true;
+        Debug.Log("Negative Space Created");
+    }
 
-            // Negative Space stuff
-            if (_bodiesManager.human != null)
+    private void _updateCursors()
+    {
+        if (_bodiesManager.human != null)
+        {
+            Vector3 head = _bodiesManager.human.body.Joints[BodyJointType.head];
+            Vector3 leftHand = _bodiesManager.human.body.Joints[BodyJointType.leftHandTip];
+            Vector3 rightHand = _bodiesManager.human.body.Joints[BodyJointType.rightHandTip];
+
+
+            //_leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, _handheldListener);
+            //_rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, _handheldListener);
+
+
+            if (_handheldListener.Receiving && _handheldListener.Message.Hand != HandType.Unknown)
             {
-                Vector3 head = _bodiesManager.human.body.Joints[BodyJointType.head];
-                Vector3 leftHand = _bodiesManager.human.body.Joints[BodyJointType.leftHandTip];
-                Vector3 rightHand = _bodiesManager.human.body.Joints[BodyJointType.rightHandTip];
-
-
-                //_leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, _handheldListener);
-                //_rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, _handheldListener);
-
-
-                if (_handheldListener.Receiving && _handheldListener.Message.Hand != HandType.Unknown)
+                if (_handheldListener.Message.Hand == HandType.Left)
                 {
-                    if (_handheldListener.Message.Hand == HandType.Left)
-                    {
-                        _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, _handheldListener.Message.Rotation, _handheldListener.Message.Click);
-                        _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, Quaternion.identity, false);
-                    }
-                    else
-                    {
-                        _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, Quaternion.identity, false);
-                        _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, _handheldListener.Message.Rotation, _handheldListener.Message.Click);
-                    }
+                    _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, _handheldListener.Message.Rotation, _handheldListener.Message.Click);
+                    _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, Quaternion.identity, false);
                 }
                 else
                 {
                     _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, Quaternion.identity, false);
-                    _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, Quaternion.identity, false);
+                    _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, _handheldListener.Message.Rotation, _handheldListener.Message.Click);
                 }
+            }
+            else
+            {
+                _leftCursorScript.updateValues(head, leftHand, NegativeSpaceSize, Quaternion.identity, false);
+                _rightCursorScript.updateValues(head, rightHand, NegativeSpaceSize, Quaternion.identity, false);
+            }
+
+            _NSNetwork.updateNSCursors(_leftCursorScript.gameObject.transform.position, _leftCursorScript.gameObject.transform.rotation,
+                                       _rightCursorScript.gameObject.transform.position, _rightCursorScript.gameObject.transform.rotation);
+        }
+    }
+
+    internal void updateRemoteCursors(Vector3 leftPosition, Quaternion leftRotation, Vector3 rightPosition, Quaternion rightRotation)
+    {
+        // update the cursors of the remote guy
+    }
+
+    private void _syncNSObjects()
+    {
+        foreach (GameObject o in _NSObjects.Values)
+        {
+            NSObject nso = o.GetComponent<NSObject>();
+            if (nso.lockStatus == LockType.Local)
+            {
+                _NSNetwork.updateNSObjectSend(nso.name, o.transform.position, o.transform.rotation);
             }
         }
     }
@@ -174,16 +224,6 @@ public class NegativeSpace : MonoBehaviour
     private Quaternion convert(Quaternion r)
     {
         return Quaternion.Inverse(r);
-    }
-
-    private void _createCube(Vector3 vector3)
-    {
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.transform.parent = origin;
-        cube.transform.localPosition = convertToNSCoordinates(vector3);
-        cube.transform.localRotation = Quaternion.identity;
-        cube.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
-        //cube.GetComponent<Renderer>().enabled = false;
     }
 
     public Vector3 convertToNSCoordinates(Vector3 v)
@@ -211,4 +251,73 @@ public class NegativeSpace : MonoBehaviour
     {
         return Vector3.Cross((b - a),(c - a));
     }
+
+    #region workspace Sync
+    private int ObjectInitCounter = 0;
+    public string generateNSObjectID()
+    {
+        return "" + location + ObjectInitCounter++;
+    }
+
+    internal void updateObject(string uid, Vector3 position, Quaternion rotation)
+    {
+        if (_NSObjects.ContainsKey(uid))
+        {
+            GameObject o = _NSObjects[uid];
+            o.transform.position = position;
+            o.transform.rotation = rotation;
+        }
+    }
+
+    internal void lockObject(string uid)
+    {
+        if (_NSObjects.ContainsKey(uid))
+        {
+            _NSObjects[uid].GetComponent<NSObject>().lockStatus = LockType.Remote;
+        }
+    }
+
+    internal void unlockObject(string uid)
+    {
+        if (_NSObjects.ContainsKey(uid))
+        {
+            _NSObjects[uid].GetComponent<NSObject>().lockStatus = LockType.NotLocked;
+        }
+    }
+
+    private void _createLocalObject(string description)
+    {
+        string uid = generateNSObjectID();
+        GameObject o = _createObject(description, uid);
+        _NSNetwork.instantiateObject(description, uid);
+    }
+
+    public void createRemoteObject(string description, string uid)
+    {
+        GameObject o = _createObject(description, uid);
+    }
+
+    private GameObject _createObject(string description, string uid)
+    {
+        GameObject o;
+        if (description == "cube")
+        {
+            o = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        }
+        else
+        {
+            o = new GameObject();
+        }
+
+        o.transform.parent = origin;
+        o.transform.localPosition = Vector3.zero;
+        o.transform.localRotation = Quaternion.identity;
+        o.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+        o.AddComponent<NSObject>();
+        NSObject ns = o.GetComponent<NSObject>();
+        ns.name = uid;
+        _NSObjects.Add(uid, o);
+        return o;
+    }
+    #endregion
 }

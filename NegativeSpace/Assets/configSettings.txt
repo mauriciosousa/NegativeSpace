@@ -1,4 +1,23 @@
-%Config File created in 2016-12-14 16:10:47
 
-udp.listenport=22222
-udp.trackerport=33333
+
+% Negative Space Config File lol
+
+
+% LOCATION A
+
+A.machine.address=127.0.0.1
+A.rpc.port=5000
+A.rcv.handheld.port=5001
+A.rcv.tracker=5002
+A.tracker.sensor.stream=5003
+A.ravatar.listen.port=5004
+
+% LOCATION B
+
+B.machine.address=127.0.0.1
+B.rpc.port=5000
+B.rcv.handheld.port=5101
+B.rcv.tracker=5102
+B.tracker.sensor.stream=5103
+B.ravatar.listen.port=5104
+
