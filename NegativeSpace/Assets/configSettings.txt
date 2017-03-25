@@ -1,23 +1,53 @@
-
-
 % Negative Space Config File lol
+
+
+
+
+
+
+
+
+
+
 
 
 % LOCATION A
 
 A.machine.address=127.0.0.1
+
 A.rpc.port=5000
 A.rcv.handheld.port=5001
-A.rcv.tracker=5002
-A.tracker.sensor.stream=5003
+
+A.tracker.broadcast.port=5002
+
+A.tracker.listen.port=5003
+
+
+
 A.ravatar.listen.port=5004
+
+
+
+
+
+
+
+
+
 
 % LOCATION B
 
 B.machine.address=127.0.0.1
+
 B.rpc.port=5000
 B.rcv.handheld.port=5101
-B.rcv.tracker=5102
-B.tracker.sensor.stream=5103
+
+B.tracker.broadcast.port=5102
+
+B.tracker.listen.port=5103
+
+
+
 B.ravatar.listen.port=5104
+
 
