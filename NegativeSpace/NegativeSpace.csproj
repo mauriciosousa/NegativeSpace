@@ -85,6 +85,7 @@
     <Compile Include="Assets\Scripts\BodiesManager.cs" />
     <Compile Include="Assets\Scripts\CloudMessage.cs" />
     <Compile Include="Assets\Scripts\ConfigProperties.cs" />
+    <Compile Include="Assets\Scripts\Log.cs" />
     <Compile Include="Assets\Scripts\Main.cs" />
     <Compile Include="Assets\Scripts\MouseOrbitImproved.cs" />
     <Compile Include="Assets\Scripts\NSCursor.cs" />

@@ -18,6 +18,14 @@ public class RPCNetwork : MonoBehaviour
     public int connectionDelay = 2000;
     private DateTime _startTime;
 
+    public string ConnectionStatus
+    {
+        get
+        {
+            return Network.peerType.ToString() + (Network.peerType == NetworkPeerType.Server ?  "( " + Network.connections.Length + " clients)" : "");
+        }
+    }
+
 
     void Start()
     {
@@ -39,14 +47,11 @@ public class RPCNetwork : MonoBehaviour
                 Network.InitializeServer(5, _port, false);
             }
 
-            //if (Input.GetKeyDown(KeyCode.C))
+            if (workspace.location == Location.B && DateTime.Now > _startTime.AddMilliseconds(connectionDelay))
             {
-                if (workspace.location == Location.B && DateTime.Now > _startTime.AddMilliseconds(connectionDelay))
-                {
-                    Network.Connect(_address, _port);
-                    _startTime = DateTime.Now;
-                    connectionDelay += 100;
-                }
+                Network.Connect(_address, _port);
+                _startTime = DateTime.Now;
+                connectionDelay += 100;
             }
         }
     }
@@ -119,12 +124,6 @@ public class RPCNetwork : MonoBehaviour
         {
             networkView.RPC("updateNSCursors_Remote", RPCMode.Others, leftPosition, leftRotation, rightPosition, rightRotation);
         }
-    }
-
-    void OnGUI()
-    {
-        GUI.Label(new Rect(10, 10, 500, 35), Network.peerType.ToString());
-
     }
 
     void OnConnectedToServer()

@@ -57,6 +57,7 @@ public class NegativeSpace : MonoBehaviour
     public Location location = Location.A;
     private RPCNetwork _NSNetwork;
     private Dictionary<string, GameObject> _NSObjects;
+    public Dictionary<string, GameObject> NSObsjects { get { return _NSObjects; } }
 
     void Awake()
     {
@@ -139,10 +140,26 @@ public class NegativeSpace : MonoBehaviour
         gameObject.transform.localPosition = Vector3.zero;
         gameObject.transform.localRotation = Quaternion.identity;
 
-        GameObject BL = GameObject.Find("BL");
-        GameObject BR = GameObject.Find("BR");
-        GameObject TR = GameObject.Find("TR");
-        GameObject TL = GameObject.Find("TL");
+        GameObject BL = null;
+        GameObject BR = null;
+        GameObject TR = null;
+        GameObject TL = null;
+
+        if (_perspectiveProjection.screenOrientation == ScreenOrientation.Landscape)
+        {
+            BL = GameObject.Find("BL");
+            BR = GameObject.Find("BR");
+            TR = GameObject.Find("TR");
+            TL = GameObject.Find("TL");
+        }
+        else if (_perspectiveProjection.screenOrientation == ScreenOrientation.Portrait)
+        {
+            BL = GameObject.Find("BR");
+            BR = GameObject.Find("TR");
+            TR = GameObject.Find("TL");
+            TL = GameObject.Find("BL");
+        }
+
 
         GameObject sBL = _getShiftedObject("SBL", BL, Vector3.forward, _perspectiveProjection.SurfaceCenter);
         GameObject sBR = _getShiftedObject("SBR", BR, Vector3.forward, _perspectiveProjection.SurfaceCenter);
@@ -353,23 +370,4 @@ public class NegativeSpace : MonoBehaviour
         return o;
     }
     #endregion
-
-    void OnGUI()
-    {
-
-        int top = 50;
-        int left = 10;
-
-        if (_NSObjects.Count > 0)
-        {
-            GUI.Label(new Rect(left, top, 500, 30), "GO/LockStatus");
-            left += 10; top += 25;
-        }
-        foreach (GameObject o in _NSObjects.Values)
-        {
-            GUI.Label(new Rect(left, top, 500, 30), o.name + " " + o.GetComponent<NSObject>().lockStatus.ToString());
-            top += 25;
-        }
-
-    }
 }
