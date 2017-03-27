@@ -54,16 +54,19 @@ public class Main : MonoBehaviour
 
             int top = 10;
             int left = 10;
-            int newLine = 25;
+            int newLine = 20;
+            int tabShift = 120;
 
-
+            GUI.Label(new Rect(left, top, 200, 30), "Configured Location:", _titleStyle);
+            GUI.Label(new Rect(left + tabShift, top, 200, 30), _negativeSpace.location.ToString(), _normalStyle);
+            top += newLine;
 
             GUI.Label(new Rect(left, top, 200, 30), "Network Status:", _titleStyle);
-            GUI.Label(new Rect(left + 100, top, 200, 30), _NSNetwork.ConnectionStatus, _normalStyle);
+            GUI.Label(new Rect(left + tabShift, top, 200, 30), _NSNetwork.ConnectionStatus, _normalStyle);
             top += newLine;
 
             GUI.Label(new Rect(left, top, 200, 30), "Screen Orientation:", _titleStyle);
-            GUI.Label(new Rect(left + 100, top, 200, 30), _projection.screenOrientation.ToString(), _normalStyle);
+            GUI.Label(new Rect(left + tabShift, top, 200, 30), _projection.screenOrientation.ToString(), _normalStyle);
             top += newLine;
 
             if (_negativeSpace.NSObsjects.Count > 0)
@@ -74,7 +77,7 @@ public class Main : MonoBehaviour
                 {
                     nso += o.name + "(" + o.GetComponent<NSObject>().lockStatus.ToString() + "), ";
                 }
-                GUI.Label(new Rect(left + 100, top, Screen.width, 500), nso, _normalStyle);
+                GUI.Label(new Rect(left + tabShift, top, Screen.width, 500), nso, _normalStyle);
 
             }
         }
