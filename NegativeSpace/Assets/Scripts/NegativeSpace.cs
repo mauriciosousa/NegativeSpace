@@ -105,17 +105,23 @@ public class NegativeSpace : MonoBehaviour
 
     private void _DEBUG_NEGATIVESPACECONNECTIONS()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.F2))
         {
             _createLocalObject("helmet");
+        }
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            _createLocalObject("cube");
         }
 
         if (Input.GetMouseButtonDown(0))
         { // if left button pressed...
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
+            Debug.DrawRay(ray.origin, ray.direction);
             if (Physics.Raycast(ray, out hit))
             {
+                Debug.Log(hit.transform.gameObject.name);
                 NSObject o = hit.transform.gameObject.GetComponent<NSObject>();
                 if (o != null)
                 {
@@ -130,6 +136,8 @@ public class NegativeSpace : MonoBehaviour
                         _NSNetwork.unlockObject(o.name);
                     }
                 }
+                else
+                { Debug.Log("null object"); }
             }
         }
     }
@@ -353,20 +361,26 @@ public class NegativeSpace : MonoBehaviour
         if (description == "cube")
         {
             o = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            o.transform.parent = origin;
             o.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+            o.transform.localPosition = Vector3.zero;
+            o.transform.localRotation = Quaternion.identity;
+
         }
         else if (description == "helmet")
         {
             o = (GameObject) Instantiate(Resources.Load("prefabs/Helmet"), Vector3.zero, Quaternion.identity);
+            o.transform.parent = origin;
+            o.transform.localPosition = Vector3.zero;
+            o.transform.localRotation = Quaternion.Euler(-90, 180, 0);
+            o.name = "Helmet";
         }
         else
         {
             o = new GameObject();
         }
 
-        o.transform.parent = origin;
-        o.transform.localPosition = Vector3.zero;
-        o.transform.localRotation = Quaternion.identity;
+        
         o.AddComponent<NSObject>();
         NSObject ns = o.GetComponent<NSObject>();
         ns.name = uid;
