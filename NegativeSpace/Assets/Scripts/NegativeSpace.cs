@@ -107,7 +107,7 @@ public class NegativeSpace : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            _createLocalObject("cube");
+            _createLocalObject("helmet");
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -266,7 +266,7 @@ public class NegativeSpace : MonoBehaviour
             NSObject nso = o.GetComponent<NSObject>();
             if (nso.lockStatus == LockType.Local)
             {
-                _NSNetwork.updateNSObjectSend(nso.name, o.transform.position, o.transform.rotation);
+                _NSNetwork.updateNSObjectSend(nso.name, o.transform.localPosition, o.transform.localRotation);
             }
         }
     }
@@ -314,8 +314,8 @@ public class NegativeSpace : MonoBehaviour
         if (_NSObjects.ContainsKey(uid))
         {
             GameObject o = _NSObjects[uid];
-            o.transform.position = position;
-            o.transform.rotation = rotation;
+            o.transform.localPosition = position;
+            o.transform.localRotation = rotation;
         }
     }
 
@@ -353,6 +353,11 @@ public class NegativeSpace : MonoBehaviour
         if (description == "cube")
         {
             o = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            o.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+        }
+        else if (description == "helmet")
+        {
+            o = (GameObject) Instantiate(Resources.Load("prefabs/Helmet"), Vector3.zero, Quaternion.identity);
         }
         else
         {
@@ -362,7 +367,6 @@ public class NegativeSpace : MonoBehaviour
         o.transform.parent = origin;
         o.transform.localPosition = Vector3.zero;
         o.transform.localRotation = Quaternion.identity;
-        o.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
         o.AddComponent<NSObject>();
         NSObject ns = o.GetComponent<NSObject>();
         ns.name = uid;

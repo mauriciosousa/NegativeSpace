@@ -26,7 +26,6 @@ public class RPCNetwork : MonoBehaviour
         }
     }
 
-
     void Start()
     {
         workspace = this.gameObject.GetComponent<NegativeSpace>() as NegativeSpace;
@@ -36,7 +35,6 @@ public class RPCNetwork : MonoBehaviour
         _address = p.remote_NegativeSpaceMachine_Address;
         _port = p.RPC_Port;
     }
-
 
     void Update()
     {
