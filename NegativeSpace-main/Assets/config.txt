@@ -1,0 +1,36 @@
+% Negative Space Config File lol
+
+% LOCATION A
+
+A.machine.address=146.193.224.37
+
+A.rpc.port=5000
+A.rcv.handheld.port=5001
+
+A.tracker.broadcast.port=5002
+
+A.tracker.listen.port=5003
+
+A.ravatar.listen.port=5004
+
+A.local.surface.listen=5005
+A.remote.surface.listen=5006
+
+% LOCATION B
+
+B.machine.address=146.193.224.133
+
+B.rpc.port=5000
+B.rcv.handheld.port=5101
+
+B.tracker.broadcast.port=5102
+
+B.tracker.listen.port=5103
+
+
+
+B.ravatar.listen.port=5104
+
+
+B.local.surface.listen=5105
+B.remote.surface.listen=5106

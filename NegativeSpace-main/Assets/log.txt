@@ -1,0 +1,5 @@
+2017/04/10 - 13:01:56
+[Main (Properties)] Config file found!
+[Main (Main)] Config Loaded
+[Main (SurfaceRequest)] Requesting surface to 5004 to receive in 5005
+[Main (SurfaceRequest)] Requesting surface to 5104 to receive in 5006
