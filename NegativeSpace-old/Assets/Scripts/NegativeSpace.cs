@@ -40,12 +40,17 @@ public class NegativeSpace : MonoBehaviour
     public GameObject leftCursor;
     private NSCursor _leftCursorScript;
 
+    public GameObject rightCursor;
+    private NSCursor _rightCursorScript;
+
+    public GameObject leftCursorRemote;
+    public GameObject rightCursorRemote;
+
     private UDPHandheldListener _handheldListener;
     private int handheldListenPort;
     public string DecryptKey;
 
-    public GameObject rightCursor;
-    private NSCursor _rightCursorScript;
+
 
     private NegativespaceSurface _surface = null;
 
@@ -68,16 +73,10 @@ public class NegativeSpace : MonoBehaviour
         _NSObjects = new Dictionary<string, GameObject>();
 
         _NSNetwork = this.gameObject.GetComponent<RPCNetwork>();
-
-        
     }
 
     void Start ()
     {
-
-        origin = GameObject.Find("ScreenCenter").transform;
-        _bodiesManager = GameObject.Find("BodiesManagerGO").GetComponent<BodiesManager>();
-        _surface = new NegativespaceSurface();
 
         NSProperties p = GameObject.Find("Main").GetComponent<NSProperties>();
         handheldListenPort = p.handheld_Port;
@@ -92,14 +91,21 @@ public class NegativeSpace : MonoBehaviour
             if (!_spaceCreated)
             {
                 _createNegativeSpace();
+                origin = GameObject.Find("ScreenCenter").transform;
+                _bodiesManager = GameObject.Find("BodiesManagerGO").GetComponent<BodiesManager>();
+                _surface = new NegativespaceSurface();
+
+
+                //Debug.Log("waiting");
             }
 
-            _syncNSObjects();
-            _updateCursors();
+            //_syncNSObjects();
+            //_updateCursors();
+            
             //_NSNetwork.lockObject(o.name);
             //_NSNetwork.unlockObject(o.name);
 
-            _DEBUG_NEGATIVESPACECONNECTIONS();
+            //_DEBUG_NEGATIVESPACECONNECTIONS();
         }
     }
 
@@ -153,7 +159,7 @@ public class NegativeSpace : MonoBehaviour
         GameObject TR = null;
         GameObject TL = null;
 
-        if (_perspectiveProjection.screenOrientation == ScreenOrientation.Landscape)
+        if (_perspectiveProjection.screenOrientation == ScreenOrientation.Landscape) // TODO: Move to the PerspectiveProjection.cs
         {
             BL = GameObject.Find("BL");
             BR = GameObject.Find("BR");
@@ -221,6 +227,37 @@ public class NegativeSpace : MonoBehaviour
         MeshCollider collider = gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider;
 
 
+
+        /* Create Remote Screen Center */
+        Vector3 worldCenter = (BL.transform.position + sTR.transform.position) / 2;
+
+        GameObject localSpace = new GameObject();
+        localSpace.name = "LocalSpace";
+        localSpace.transform.position = worldCenter;
+        localSpace.transform.rotation = _perspectiveProjection.ScreenCenter.transform.localRotation;
+
+        _perspectiveProjection.ScreenCenter.transform.parent = localSpace.transform;
+        //_perspectiveProjection.ScreenCenter.transform.localPosition = Vector3.zero;
+
+        GameObject remoteSpace = new GameObject();
+        remoteSpace.name = "RemoteSpace";
+        
+
+
+        GameObject RavatarManager = GameObject.Find("RavatarManager");
+        Tracker tracker = RavatarManager.GetComponent<Tracker>();
+        foreach (GameObject o in tracker.cloudGameObjects)
+        {
+         //   o.transform.parent = remoteSpace.transform;
+            
+        }
+
+        remoteSpace.transform.position = localSpace.transform.position;
+        //remoteSpace.transform.forward = -localSpace.transform.forward;
+        //remoteSpace.transform.up = localSpace.transform.up;
+
+
+        /*   */
         _spaceCreated = true;
         Debug.Log("Negative Space Created");
     }
@@ -264,7 +301,13 @@ public class NegativeSpace : MonoBehaviour
 
     internal void updateRemoteCursors(Vector3 leftPosition, Quaternion leftRotation, Vector3 rightPosition, Quaternion rightRotation)
     {
-        // update the cursors of the remote guy
+        if (leftCursorRemote != null && rightCursorRemote != null)
+        {
+            leftCursorRemote.transform.localPosition = leftPosition;
+            leftCursorRemote.transform.localRotation = leftRotation;
+            rightCursorRemote.transform.localPosition = rightPosition;
+            rightCursorRemote.transform.localRotation = rightRotation;
+        }
     }
 
     private void _syncNSObjects()

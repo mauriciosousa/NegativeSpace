@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Main : MonoBehaviour
 {
 
+
+    public SurfaceRectangle surfaceRectangle;
 
     private NegativeSpace _negativeSpace;
     private NSProperties _properties;
@@ -17,17 +20,23 @@ public class Main : MonoBehaviour
     public GUIStyle _titleStyle;
     public GUIStyle _normalStyle;
 
+    
+
     void Awake()
     {
         Application.runInBackground = true;
+        surfaceRectangle = null;
     }
 
 	void Start ()
     {
-        _negativeSpace = GameObject.Find("NegativeSpace").GetComponent<NegativeSpace>();
         _properties = GetComponent<NSProperties>();
-        _NSNetwork = GameObject.Find("NegativeSpace").GetComponent<RPCNetwork>();
-        _projection = Camera.main.GetComponent<PerspectiveProjection>();
+
+
+        //_negativeSpace = GameObject.Find("NegativeSpace").GetComponent<NegativeSpace>();
+
+        //_NSNetwork = GameObject.Find("NegativeSpace").GetComponent<RPCNetwork>();
+        //_projection = Camera.main.GetComponent<PerspectiveProjection>();
     }
 
     void Update () {
@@ -81,5 +90,23 @@ public class Main : MonoBehaviour
 
             }
         }
+    }
+
+    internal void receiveSurface(string stringToParse)
+    {
+        string[] s = stringToParse.Split(MessageSeparators.L1);
+        string name = s[0];
+        Vector3 bl = convertRemoteStringToVector3(s[1]);
+        Vector3 br = convertRemoteStringToVector3(s[2]);
+        Vector3 tl = convertRemoteStringToVector3(s[3]);
+        Vector3 tr = convertRemoteStringToVector3(s[4]);
+
+        surfaceRectangle = new SurfaceRectangle(bl, br, tl, tr);
+    }
+
+    internal static Vector3 convertRemoteStringToVector3(string v)
+    {
+        string[] p = v.Split(MessageSeparators.L3);
+        return new Vector3(float.Parse(p[0].Replace(',', '.')), float.Parse(p[1].Replace(',', '.')), float.Parse(p[2].Replace(',', '.')));
     }
 }

@@ -97,6 +97,7 @@
     <Compile Include="Assets\Scripts\ProjectionClipper.cs" />
     <Compile Include="Assets\Scripts\RPCNetwork.cs" />
     <Compile Include="Assets\Scripts\Sensors.cs" />
+    <Compile Include="Assets\Scripts\SurfaceMessage.cs" />
     <Compile Include="Assets\Scripts\TcpKinectListener.cs" />
     <Compile Include="Assets\Scripts\Tracker.cs" />
     <Compile Include="Assets\Scripts\TrackerProperties.cs" />

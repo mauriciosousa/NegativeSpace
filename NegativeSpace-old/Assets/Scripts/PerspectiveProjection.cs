@@ -13,6 +13,9 @@ public enum ScreenOrientation
 //[ExecuteInEditMode]
 public class PerspectiveProjection : MonoBehaviour {
 
+    private GameObject _screenCenter;
+    public GameObject ScreenCenter { get { return _screenCenter; } }
+
     public ScreenOrientation screenOrientation;
 
     public GameObject projectionScreen;
@@ -32,36 +35,12 @@ public class PerspectiveProjection : MonoBehaviour {
 
     public Transform SurfaceCenter;
 
-    void Start () {
-        surfaceRect = new SurfaceRectangle();
-        _DoWeHaveASurface = surfaceRect.load();
-        _surfaceVertices = new List<GameObject>();
+    private Main mainScript;
 
-        GameObject screenCenterGO = new GameObject();
-        screenCenterGO.name = "ScreenCenter";
-        Transform newTrans = screenCenterGO.transform;
-        newTrans.position = (surfaceRect.SurfaceBottomLeft + surfaceRect.SurfaceTopRight) * 0.5f;
-        Vector3 upwards = (surfaceRect.SurfaceTopLeft - surfaceRect.SurfaceBottomLeft).normalized;
-        Vector3 right = (surfaceRect.SurfaceTopRight - surfaceRect.SurfaceTopLeft).normalized;
-        newTrans.rotation = Quaternion.LookRotation(Vector3.Cross(upwards, right), upwards);
-
-        SurfaceCenter = newTrans;
-
-        if (_DoWeHaveASurface)
-        {
-            Debug.Log("We HAVE SURFACE");
-            _instantiateSphere(surfaceRect.SurfaceBottomLeft, "BL", SurfaceCenter);
-            _instantiateSphere(surfaceRect.SurfaceBottomRight, "BR", SurfaceCenter);
-            _instantiateSphere(surfaceRect.SurfaceTopLeft, "TL", SurfaceCenter);
-            _instantiateSphere(surfaceRect.SurfaceTopRight, "TR", SurfaceCenter);
-        }
-
-        //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);//(GameObject)Instantiate(Resources.Load("Prefabs/yoda-go"), Vector3.zero, Quaternion.identity);
-        //cube.transform.parent = screenCenterGO.transform;
-        //cube.transform.localPosition = Vector3.zero;// new Vector3(0f, -0.05f, 0f);
-        //cube.transform.localRotation = Quaternion.identity;
-        //cube.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        //cube.GetComponent<Renderer>().enabled = false;
+    void Start ()
+    {
+        _DoWeHaveASurface = false;
+        mainScript = GameObject.Find("Main").GetComponent<Main>();
     }
 
     private void _instantiateSphere(Vector3 position, string name, Transform parent)
@@ -82,13 +61,38 @@ public class PerspectiveProjection : MonoBehaviour {
         sphere.transform.parent = parent;
     }
 
-    void Update () {
-
-        if (Input.GetKeyDown(KeyCode.Q))
+    void Update ()
+    {
+        if (!_DoWeHaveASurface && mainScript.surfaceRectangle != null)
         {
-            foreach (GameObject go in _surfaceVertices)
+            surfaceRect = mainScript.surfaceRectangle;
+            _DoWeHaveASurface = true;
+            _surfaceVertices = new List<GameObject>();
+
+            _screenCenter = new GameObject();
+            _screenCenter.name = "ScreenCenter";
+            Transform newTrans = _screenCenter.transform;
+            newTrans.position = (surfaceRect.SurfaceBottomLeft + surfaceRect.SurfaceTopRight) * 0.5f;
+            Vector3 upwards = (surfaceRect.SurfaceTopLeft - surfaceRect.SurfaceBottomLeft).normalized;
+            Vector3 right = (surfaceRect.SurfaceTopRight - surfaceRect.SurfaceTopLeft).normalized;
+            newTrans.rotation = Quaternion.LookRotation(Vector3.Cross(upwards, right), upwards);
+
+            SurfaceCenter = newTrans;
+
+            Debug.Log("We HAVE SURFACE");
+            _instantiateSphere(surfaceRect.SurfaceBottomLeft, "BL", SurfaceCenter);
+            _instantiateSphere(surfaceRect.SurfaceBottomRight, "BR", SurfaceCenter);
+            _instantiateSphere(surfaceRect.SurfaceTopLeft, "TL", SurfaceCenter);
+            _instantiateSphere(surfaceRect.SurfaceTopRight, "TR", SurfaceCenter);
+        }
+        else if (_DoWeHaveASurface)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
             {
-                go.GetComponent<MeshRenderer>().enabled = !go.GetComponent<MeshRenderer>().enabled;
+                foreach (GameObject go in _surfaceVertices)
+                {
+                    go.GetComponent<MeshRenderer>().enabled = !go.GetComponent<MeshRenderer>().enabled;
+                }
             }
         }
 	}

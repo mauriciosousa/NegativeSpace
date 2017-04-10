@@ -84,6 +84,21 @@ public class UdpListener : MonoBehaviour {
                         AvatarMessage av = new AvatarMessage(splitmsg[1], toProcess);
                         gameObject.GetComponent<Tracker>().processAvatarMessage(av);
                     }
+                    else if (Convert.ToChar(toProcess[0]) == 'S')
+                    {
+                        Debug.Log("Got Surfaces Message! ");
+                        string stringToParse = Encoding.ASCII.GetString(toProcess);
+
+                        string[] s = stringToParse.Split(MessageSeparators.L0);
+                        if (s.Length == 2)
+                        {
+                            GameObject.Find("Main").GetComponent<Main>().receiveSurface(s[1]);
+                        }
+                        else
+                        {
+                            Debug.LogError("NO SURFACE");
+                        }
+                    }
                 }
                 _stringsToParse.RemoveAt(0);
             }

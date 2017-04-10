@@ -12,8 +12,9 @@ public class Tracker : MonoBehaviour
 {
 
 	private Dictionary<string, PointCloudSimple> _clouds;
-    private Dictionary<string, GameObject> _cloudGameObjects;
 
+    private Dictionary<string, GameObject> _cloudGameObjects;
+    public GameObject [] cloudGameObjects { get { return _cloudGameObjects.Values.ToArray<GameObject>(); } }
 
     void Awake ()
 	{
@@ -22,11 +23,18 @@ public class Tracker : MonoBehaviour
         _cloudGameObjects = new Dictionary<string, GameObject>();
         _loadConfig ();
 
+
+
         UdpClient udp = new UdpClient();
         string message = AvatarMessage.createRequestMessage(1, TrackerProperties.Instance.listenPort);
         byte[] data = Encoding.UTF8.GetBytes(message);
         IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Broadcast, TrackerProperties.Instance.trackerPort);
         Debug.Log("Sent request to port" + TrackerProperties.Instance.trackerPort + " with content " + message); 
+        udp.Send(data, data.Length, remoteEndPoint);
+
+        message = SurfaceMessage.createRequestMessage(TrackerProperties.Instance.listenPort);
+        data = Encoding.UTF8.GetBytes(message);
+        Debug.Log("Sent request to port" + TrackerProperties.Instance.trackerPort + " with content " + message);
         udp.Send(data, data.Length, remoteEndPoint);
     }
     

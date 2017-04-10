@@ -25,6 +25,15 @@ public class SurfaceRectangle
         _tr = Vector3.zero;
     }
 
+    public SurfaceRectangle(Vector3 BL, Vector3 BR, Vector3 TL, Vector3 TR)
+    {
+        _folder = null;
+        _bl = BL;
+        _br = BR;
+        _tl = TL;
+        _tr = TR;
+    }
+
     public bool load()
     {
 
