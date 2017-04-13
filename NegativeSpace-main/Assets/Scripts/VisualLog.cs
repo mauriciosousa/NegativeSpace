@@ -17,15 +17,19 @@ public class VisualLog : MonoBehaviour {
     void Awake()
     {
         _logfilename = Application.dataPath + "/log.txt";
-        Show = false;
+        //Show = false;
         _lines = new List<string>();
         File.Create(_logfilename).Close();
         WriteLineToFile(DateTime.Now.ToString("yyyy/MM/dd - HH:mm:ss"));
     }
 
-    public void WriteLine(object sender, string line)
+    internal void WriteLine(object sender, string line)
     {
-        line = "[" + sender.ToString() + "] " + line;
+        WriteLine("[" + sender.ToString() + "] " + line);
+    }
+
+    public void WriteLine(string line)
+    {
         _lines.Add(line);
         WriteLineToFile(line);
         int possibleLines = (Screen.height / LineInPixels);
@@ -59,4 +63,6 @@ public class VisualLog : MonoBehaviour {
             }
         }
     }
+
+
 }

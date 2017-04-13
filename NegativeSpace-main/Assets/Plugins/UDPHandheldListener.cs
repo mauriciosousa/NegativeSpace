@@ -37,7 +37,7 @@ public class HandheldMessage
 
         foreach (string s in statements)
         {
-            string [] tokens = s.Split('=');
+            string[] tokens = s.Split('=');
 
             if (tokens[0] == "hand")
             {
@@ -96,4 +96,3 @@ public class UDPHandheldListener
         _client.BeginReceive(new AsyncCallback(recv), null);
     }
 }
-

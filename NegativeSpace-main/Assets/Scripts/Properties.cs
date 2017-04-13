@@ -14,6 +14,7 @@ public class NSInfo
     internal string rpcPort;
     internal string trackerBroadcastPort;
     internal string trackerListenPort;
+    internal string ravatarListenPort;
 }
 
 public class Properties : MonoBehaviour {
@@ -28,6 +29,8 @@ public class Properties : MonoBehaviour {
 
     public NSInfo localSetupInfo = null;
     public NSInfo remoteSetupInfo = null;
+
+    public float negativeSpaceLength = 0f;
 
     private Location _location;
 
@@ -75,9 +78,10 @@ public class Properties : MonoBehaviour {
         info.receiveHandheldPort = load(_location.ToString() + ".rcv.handheld.port");
         info.trackerBroadcastPort = load(_location.ToString() + ".tracker.broadcast.port");
         info.trackerListenPort = load(_location.ToString() + ".tracker.listen.port");
-        info.trackerListenPort = load(_location.ToString() + ".ravatar.listen.port");
+        info.ravatarListenPort = load(_location.ToString() + ".ravatar.listen.port");
         info.localSurfaceListen = load(_location.ToString() + ".local.surface.listen");
         info.remoteSurfaceListen = load(_location.ToString() + ".remote.surface.listen");
+        negativeSpaceLength = float.Parse(load("ns.length"));
 
         return info;
     }

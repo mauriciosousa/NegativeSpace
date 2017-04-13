@@ -1,5 +1,9 @@
 % Negative Space Config File lol
 
+
+ns.length=0.4
+
+
 % LOCATION A
 
 A.machine.address=146.193.224.37
@@ -15,6 +19,8 @@ A.ravatar.listen.port=5004
 
 A.local.surface.listen=5005
 A.remote.surface.listen=5006
+
+A.sensors.listen=5007
 
 % LOCATION B
 
@@ -34,3 +40,5 @@ B.ravatar.listen.port=5104
 
 B.local.surface.listen=5105
 B.remote.surface.listen=5106
+
+B.sensors.listen=5107
