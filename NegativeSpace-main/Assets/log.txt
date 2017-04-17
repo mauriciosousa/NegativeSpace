@@ -1,4 +1,4 @@
-2017/04/13 - 18:19:44
+2017/04/17 - 14:34:32
 [Main (Properties)] Config file found!
 [Main (Main)] Config Loaded
 [Main (SurfaceRequestListener)] Awaiting Surfaces: remote at 5006, local at 5005
@@ -6,7 +6,7 @@
 [Main (SurfaceRequest)] Requesting surface to 5103 to receive in 5006
 [SurfaceRequestListener] Local Surface Received
 [SurfaceRequestListener] Remote Surface Received
+[BodiesManager (UdpBodiesListener)] Listening to Bodies in port 5002
 [Main (NegativeSpace)] Waiting for handheld at 5001
 [Main (NegativeSpace)] Negative Space Created for Location A with length 0.4
-[BodiesManager (UdpBodiesListener)] Listening to Bodies in port 5002
 [Main Camera (PerspectiveProjection)] Perspective Projection started

@@ -10,13 +10,17 @@ public class BodiesManager : MonoBehaviour
     private bool _humanLocked = false;
     public Human human = null;
 
+    private PerspectiveProjection _perspectiveProjection;
+
     void Start()
     {
+        _perspectiveProjection = Camera.main.GetComponent<PerspectiveProjection>();
         _humans = new Dictionary<string, Human>();
     }
 
     void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.L))
         {
             _humanLocked = !_humanLocked;
@@ -49,7 +53,11 @@ public class BodiesManager : MonoBehaviour
                 }
                 human = newHuman;
             }
-            //Camera.main.transform.position = human.body.Joints[BodyJointType.head];
+
+            if (_perspectiveProjection.Running)
+            {
+                Camera.main.transform.position = human.body.Joints[BodyJointType.head];
+            }
         }
 
         // finally

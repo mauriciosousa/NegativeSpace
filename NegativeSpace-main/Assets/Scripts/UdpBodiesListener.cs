@@ -22,9 +22,9 @@ public class UdpBodiesListener : MonoBehaviour
     public void startListening(int port)
     {
         _port = port;
-        udpRestart();
         GameObject.Find("Main").GetComponent<VisualLog>().WriteLine(this, "Listening to Bodies in port " + port);
-        
+        udpRestart();
+        _canDoStuff = true;
     }
 
     public void udpRestart()

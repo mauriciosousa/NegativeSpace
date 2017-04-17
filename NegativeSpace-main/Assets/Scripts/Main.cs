@@ -79,6 +79,8 @@ public class Main : MonoBehaviour {
             if (!Configured)
             { // space setup here
 
+                _bodiesListener.startListening(int.Parse(_properties.localSetupInfo.trackerBroadcastPort));
+
                 GameObject localOrigin = new GameObject("LocalOrigin");
                 localOrigin.transform.rotation = Quaternion.identity;
                 localOrigin.transform.position = Vector3.zero;
@@ -114,17 +116,18 @@ public class Main : MonoBehaviour {
 
                 _negativeSpace.create(location, _localSurface, remoteSurfaceProxy, _properties.negativeSpaceLength);
 
-                _bodiesListener.startListening(int.Parse(_properties.localSetupInfo.trackerBroadcastPort));
 
                 Camera.main.transform.position = localScreenCenter.transform.position - 0.5f * localScreenCenter.transform.forward;
                 Camera.main.transform.rotation = Quaternion.LookRotation(localScreenCenter.transform.forward, localScreenCenter.transform.up);
+
+                
 
                 _prespectiveProjection.init(_localSurface);
                 _tcpKinectListener.init();
                 _tracker.init();
 
                 Configured = true;
-
+                _log.Show = false;
             }
             else
             {
