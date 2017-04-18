@@ -6,7 +6,7 @@ ns.length=0.4
 
 % LOCATION A
 
-A.machine.address=146.193.224.37
+A.machine.address=146.193.224.38
 
 A.rpc.port=5000
 A.rcv.handheld.port=5001

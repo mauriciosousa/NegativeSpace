@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class RPCWorkspace : MonoBehaviour {
 
+    private bool _running = false;
+
     public bool Connected { get { return Network.peerType == NetworkPeerType.Client || Network.peerType == NetworkPeerType.Server; } }
 
     private Main _main;
@@ -24,26 +26,31 @@ public class RPCWorkspace : MonoBehaviour {
         _negativeSpace = GetComponent<NegativeSpace>();
         _properties = GetComponent<Properties>();
         _log = GetComponent<VisualLog>();
+        _running = true;
 	}
 
     internal void InitServer()
     {
-        _init();
+        if (!_running) _init();
         Network.InitializeServer(2, int.Parse(_properties.localSetupInfo.rpcPort), false);
     }
 
     internal void InitClient()
     {
-        _init();
-        Network.Connect(_properties.remoteSetupInfo.machineAddress, int.Parse(_properties.remoteSetupInfo.rpcPort));
-        _connectionTime = DateTime.Now;
+        if (!_running) _init();
+        if (_properties.ConfigLoaded)
+        {
+            Debug.Log("Trying to connect... " + _properties.remoteSetupInfo.machineAddress);
+            Network.Connect(_properties.remoteSetupInfo.machineAddress, int.Parse(_properties.remoteSetupInfo.rpcPort));
+            _connectionTime = DateTime.Now;
+        }
     }
 
     void Update()
     {
-        Debug.Log(Network.peerType.ToString());
+        //Debug.Log(Network.peerType.ToString());
 
-        if (_main.location == Location.B 
+        if (_running && _main.location == Location.B 
             && Network.peerType == NetworkPeerType.Disconnected
             && DateTime.Now > _connectionTime.AddMilliseconds(connectionDelay))
         {
