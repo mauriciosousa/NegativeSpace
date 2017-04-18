@@ -54,7 +54,7 @@ public class BodiesManager : MonoBehaviour
                 human = newHuman;
             }
 
-            if (_perspectiveProjection.Running)
+            if (_perspectiveProjection.Running && _perspectiveProjection.Active)
             {
                 Camera.main.transform.position = human.body.Joints[BodyJointType.head];
             }

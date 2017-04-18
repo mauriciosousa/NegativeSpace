@@ -89,6 +89,7 @@
     <Compile Include="Assets\Scripts\PerspectiveProjection.cs" />
     <Compile Include="Assets\Scripts\PointCloudSimple.cs" />
     <Compile Include="Assets\Scripts\Properties.cs" />
+    <Compile Include="Assets\Scripts\RPCWorkspace.cs" />
     <Compile Include="Assets\Scripts\SurfaceRequest.cs" />
     <Compile Include="Assets\Scripts\SurfaceRequestListener.cs" />
     <Compile Include="Assets\Scripts\TcpKinectListener.cs" />

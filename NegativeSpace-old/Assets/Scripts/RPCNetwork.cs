@@ -134,6 +134,4 @@ public class RPCNetwork : MonoBehaviour
         Debug.Log("Is client? " + Network.isClient);
         Debug.Log("not connected");
     }
-
-
 }

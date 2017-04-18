@@ -20,6 +20,7 @@ public class Main : MonoBehaviour {
     private PerspectiveProjection _prespectiveProjection;
     private Tracker _tracker;
     private TcpKinectListener _tcpKinectListener;
+    private RPCWorkspace _workspace;
 
     private bool ConfigLoaded = false;
     private bool _localSurfaceReceived = false;
@@ -45,6 +46,7 @@ public class Main : MonoBehaviour {
         _prespectiveProjection = Camera.main.GetComponent<PerspectiveProjection>();
         _tracker = GameObject.Find("RavatarManager").GetComponent<Tracker>();
         _tcpKinectListener = GameObject.Find("RavatarManager").GetComponent<TcpKinectListener>();
+        _workspace = GetComponent<RPCWorkspace>();
 
         _properties.load();
 
@@ -58,6 +60,15 @@ public class Main : MonoBehaviour {
         {
             _log.WriteLine(this, "Config Loaded");
             _surfaceRequestListener.StartReceive();
+        }
+
+        if (location == Location.A)
+        {
+            _workspace.InitServer();
+        }
+        else
+        {
+            _workspace.InitClient();
         }
     }
 
@@ -73,7 +84,7 @@ public class Main : MonoBehaviour {
             _log.Show = !_log.Show;
         }
 
-        bool ready = ConfigLoaded & _localSurfaceReceived & _remoteSurfaceReceived;
+        bool ready = ConfigLoaded & _localSurfaceReceived & _remoteSurfaceReceived & _workspace.Connected;
         if (ready)
         {
             if (!Configured)
@@ -116,11 +127,7 @@ public class Main : MonoBehaviour {
 
                 _negativeSpace.create(location, _localSurface, remoteSurfaceProxy, _properties.negativeSpaceLength);
 
-
-                Camera.main.transform.position = localScreenCenter.transform.position - 0.5f * localScreenCenter.transform.forward;
-                Camera.main.transform.rotation = Quaternion.LookRotation(localScreenCenter.transform.forward, localScreenCenter.transform.up);
-
-                
+                centerCamera();
 
                 _prespectiveProjection.init(_localSurface);
                 _tcpKinectListener.init();
@@ -131,9 +138,26 @@ public class Main : MonoBehaviour {
             }
             else
             {
-                
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    if (_prespectiveProjection.Running && _prespectiveProjection.Active)
+                    {
+                        _prespectiveProjection.Active = false;
+                        centerCamera();
+                    }
+                    else if (_prespectiveProjection.Running && !_prespectiveProjection.Active)
+                    {
+                        _prespectiveProjection.Active = true;
+                    }
+                }
             }
         }
+    }
+
+    private void centerCamera()
+    {
+        Camera.main.transform.position = _localSurface.CenterGameObject.transform.position - 0.5f * _localSurface.CenterGameObject.transform.forward;
+        Camera.main.transform.rotation = Quaternion.LookRotation(_localSurface.CenterGameObject.transform.forward, _localSurface.CenterGameObject.transform.up);
     }
 
     private Vector3 _calculateRemoteProxy(Vector3 point, GameObject localScreenCenter, float negativeSpaceLength)

@@ -9,6 +9,8 @@ public class PerspectiveProjection : MonoBehaviour
     private bool _running = false;
     public bool Running { get { return _running; } }
 
+    public bool Active = false;
+
     private bool estimateViewFrustum = true;
     private bool setNearClipPlane = false;
     private float nearClipDistanceOffset = -0.01f;
