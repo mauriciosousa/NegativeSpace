@@ -79,10 +79,7 @@ public class Main : MonoBehaviour {
 	
 	void Update ()
     {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            _log.Show = !_log.Show;
-        }
+        checkKeyboardInput();
 
         bool ready = ConfigLoaded & _localSurfaceReceived & _remoteSurfaceReceived & _workspace.Connected;
         if (ready)
@@ -151,6 +148,24 @@ public class Main : MonoBehaviour {
                     }
                 }
             }
+        }
+        else
+        {
+
+        }
+    }
+
+    private void checkKeyboardInput()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            _log.Show = !_log.Show;
+        }
+
+        if (Configured)
+        {
+            if (Input.GetKeyDown(KeyCode.F5)) _negativeSpace.instantiateLocalObject("cube");
+            if (Input.GetKeyDown(KeyCode.F6)) _negativeSpace.instantiateLocalObject("sphere");
         }
     }
 
