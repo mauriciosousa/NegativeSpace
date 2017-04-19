@@ -106,6 +106,8 @@ public class NegativeSpace : MonoBehaviour {
 
                 // todo
             }
+
+            _syncNegativeSpaceObjects();
         }
     }
 
@@ -119,7 +121,7 @@ public class NegativeSpace : MonoBehaviour {
         else o = new GameObject();
 
         o.transform.parent = NegativeSpaceCenter.transform;
-        o.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+        o.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
         o.transform.localPosition = Vector3.zero;
         o.transform.localRotation = Quaternion.identity;
         o.name = uid;
