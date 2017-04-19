@@ -107,7 +107,39 @@ public class NegativeSpace : MonoBehaviour {
                 // todo
             }
 
+            _debug_negativeSpaceConnections();
             _syncNegativeSpaceObjects();
+        }
+    }
+
+    private void _debug_negativeSpaceConnections()
+    {
+        if (Input.GetMouseButtonDown(0))
+        { // if left button pressed...
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Debug.DrawRay(ray.origin, ray.direction);
+            if (Physics.Raycast(ray, out hit))
+            {
+                NegativeSpaceObject o = hit.transform.gameObject.GetComponent<NegativeSpaceObject>();
+                if (o != null)
+                {
+                    if (o.lockStatus == LockType.NotLocked)
+                    {
+                        o.lockStatus = LockType.Local;
+                        _rpc.lockObject(o.name);
+                    }
+                    else if (o.lockStatus == LockType.Local)
+                    {
+                        o.lockStatus = LockType.NotLocked;
+                        _rpc.unlockObject(o.name);
+                    }
+                }
+                else
+                {
+                    _log.WriteLine(this, "Object is Null");
+                }
+            }
         }
     }
 

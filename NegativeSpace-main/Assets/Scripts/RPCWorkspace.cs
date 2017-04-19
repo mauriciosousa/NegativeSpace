@@ -73,7 +73,7 @@ public class RPCWorkspace : MonoBehaviour {
     }
 
     [RPC]
-    void updateNSObjectSend_Remote(string uid, Vector3 position, Quaternion rotation)
+    void updateNegativeSpaceObject_Remote(string uid, Vector3 position, Quaternion rotation)
     {
         _negativeSpace.updateObject(uid, position, rotation);
     }
@@ -82,7 +82,7 @@ public class RPCWorkspace : MonoBehaviour {
     {
         if (Network.peerType != NetworkPeerType.Disconnected)
         {
-            _networkView.RPC("updateNSObjectSend_Remote", RPCMode.Others, uid, position, rotation);
+            _networkView.RPC("updateNegativeSpaceObject_Remote", RPCMode.Others, uid, position, rotation);
         }
     }
 
