@@ -18,6 +18,7 @@ public class NegativeSpace : MonoBehaviour {
     private float _negativeSpaceLength;
 
     public Material negativeSpaceMaterial;
+    
 
     private UDPHandheldListener _handheldListener;
 
@@ -82,6 +83,14 @@ public class NegativeSpace : MonoBehaviour {
                     3, 7, 2,
                     3, 4, 7
             };
+
+        Vector2[] uv = new Vector2[m.vertices.Length];
+        for (int i = 0; i < uv.Length; i++)
+        {
+            uv[i] = new Vector2(m.vertices[i].x, m.vertices[i].z);
+        }
+        m.uv = uv;
+
         m.RecalculateNormals();
         m.RecalculateBounds();
 
